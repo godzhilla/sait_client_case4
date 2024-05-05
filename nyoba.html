@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .profile-info {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-info img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+        }
+        .profile-details {
+            text-align: left;
+        }
+        .profile-details p {
+            margin: 5px 0;
+        }
+        #usernameInput {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instagram Profile</h1>
+        <input type="text" id="usernameInput" placeholder="Enter Instagram Username">
+        <button onclick="searchProfile()">Search</button>
+        <div class="profile-info">
+            <img id="profilePicture" src="" alt="Profile Picture">
+            <div class="profile-details">
+                <p id="profileName"></p>
+                <p id="profileFollowers"></p>
+                <p id="profileFollowing"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchProfile() {
+            var username = document.getElementById('usernameInput').value;
+            if (username.trim() !== '') {
+                fetchData(username);
+            } else {
+                alert('Please enter a username.');
+            }
+        }
+
+        function fetchData(username) {
+            var xhr = new XMLHttpRequest();
+            var url = 'https://api.velixs.com/instagram';
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            var data = JSON.stringify({
+                "apikey": "6fb145773f445e094ce67d11f1beb6b87178dc2f0ce42c8cb5",
+                "username": username
+            });
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayData(response.data);
+                }
+            };
+
+            xhr.send(data);
+        }
+
+        function displayData(data) {
+            var profilePicture = document.getElementById('profilePicture');
+            var profileName = document.getElementById('profileName');
+            var profileFollowers = document.getElementById('profileFollowers');
+            var profileFollowing = document.getElementById('profileFollowing');
+
+            profilePicture.src = data.image;
+            profileName.textContent = 'Name: ' + data.name;
+            profileFollowers.textContent = 'Followers: ' + data.followers;
+            profileFollowing.textContent = 'Following: ' + data.following;
+        }
+    </script>
+</body>
+</html>
